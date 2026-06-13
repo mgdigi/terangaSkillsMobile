@@ -15,7 +15,7 @@ class MissingDocsListView extends GetView<MissingDocsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Documents Perdus', style: AppTextStyles.titleLarge),
+        title: Text('Documents Perdus', style: AppTextStyles.titleLarge.copyWith(color: Theme.of(context).colorScheme.onSurface)),
         actions: [
           IconButton(
               icon: const Icon(Icons.refresh_rounded),
@@ -25,8 +25,8 @@ class MissingDocsListView extends GetView<MissingDocsController> {
       body: Obx(() {
         if (controller.isLoading.value) {
           return Shimmer.fromColors(
-            baseColor: AppColors.darkCard,
-            highlightColor: AppColors.darkBorder,
+            baseColor: Theme.of(context).cardTheme.color ?? Colors.grey[300]!,
+            highlightColor: Theme.of(context).dividerColor,
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: 6,
@@ -34,7 +34,7 @@ class MissingDocsListView extends GetView<MissingDocsController> {
                 height: 120,
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.darkCard,
+                  color: Theme.of(context).cardTheme.color,
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
@@ -46,10 +46,10 @@ class MissingDocsListView extends GetView<MissingDocsController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.find_in_page_rounded,
-                    size: 72, color: AppColors.grey600),
+                Icon(Icons.find_in_page_rounded,
+                    size: 72, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                 const SizedBox(height: 16),
-                Text('Aucun document signalé', style: AppTextStyles.titleMedium),
+                Text('Aucun document signalé', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
                   onPressed: () => Get.toNamed(AppRoutes.createMissingDoc),
@@ -83,10 +83,12 @@ class MissingDocsListView extends GetView<MissingDocsController> {
                   child: Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.darkCard,
+                      color: Theme.of(context).cardTheme.color,
                       borderRadius: BorderRadius.circular(16),
-                      border: const Border.fromBorderSide(
-                          BorderSide(color: AppColors.darkBorder)),
+                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+                      boxShadow: [
+                        BoxShadow(color: Theme.of(context).shadowColor.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                      ],
                     ),
                     child: Row(
                       children: [
@@ -101,7 +103,7 @@ class MissingDocsListView extends GetView<MissingDocsController> {
                                   placeholder: (_, __) => Container(
                                     width: 64,
                                     height: 64,
-                                    color: AppColors.darkBorder,
+                                    color: Theme.of(context).dividerColor,
                                   ),
                                   errorWidget: (_, __, ___) => _DocIcon(),
                                 )
@@ -113,19 +115,19 @@ class MissingDocsListView extends GetView<MissingDocsController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(doc.title,
-                                  style: AppTextStyles.titleSmall,
+                                  style: AppTextStyles.titleSmall.copyWith(color: Theme.of(context).colorScheme.onSurface),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis),
                               const SizedBox(height: 4),
                               if (doc.lastSeenLocation != null)
                                 Row(children: [
-                                  const Icon(Icons.location_on_outlined,
-                                      size: 12, color: AppColors.grey500),
+                                  Icon(Icons.location_on_outlined,
+                                      size: 12, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                                   const SizedBox(width: 4),
                                   Expanded(
                                     child: Text(doc.lastSeenLocation!,
                                         style: AppTextStyles.bodySmall.copyWith(
-                                            color: AppColors.grey500),
+                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis),
                                   ),
@@ -151,8 +153,8 @@ class MissingDocsListView extends GetView<MissingDocsController> {
                             ],
                           ),
                         ),
-                        const Icon(Icons.chevron_right_rounded,
-                            color: AppColors.grey500, size: 20),
+                        Icon(Icons.chevron_right_rounded,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4), size: 20),
                       ],
                     ),
                   ),
