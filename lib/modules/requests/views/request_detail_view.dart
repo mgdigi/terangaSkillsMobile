@@ -24,7 +24,7 @@ class RequestDetailView extends GetView<RequestsController> {
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: Get.back,
         ),
-        title: Text('Détail de la demande', style: AppTextStyles.titleMedium),
+        title: Text('Détail de la demande', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -57,7 +57,7 @@ class RequestDetailView extends GetView<RequestsController> {
               const SizedBox(height: 24),
               // ─── Timeline ───────────────────────────
               if (req.history != null && req.history!.isNotEmpty) ...[
-                Text('Historique', style: AppTextStyles.titleMedium),
+                Text('Historique', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 16),
                 ...req.history!.map((log) => _TimelineItem(log: log)),
               ],
@@ -94,7 +94,7 @@ class _StatusBanner extends StatelessWidget {
             children: [
               Text('Statut actuel',
                   style: AppTextStyles.labelSmall
-                      .copyWith(color: AppColors.grey500)),
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
               Text(label,
                   style: AppTextStyles.titleSmall.copyWith(color: color)),
             ],
@@ -117,10 +117,9 @@ class _InfoCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.darkCard,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(12),
-          border: const Border.fromBorderSide(
-              BorderSide(color: AppColors.darkBorder)),
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,10 +128,10 @@ class _InfoCard extends StatelessWidget {
               width: 110,
               child: Text(label,
                   style: AppTextStyles.bodySmall
-                      .copyWith(color: AppColors.grey500)),
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
             ),
             Expanded(
-              child: Text(value, style: AppTextStyles.bodyMedium),
+              child: Text(value, style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
             ),
           ],
         ),
@@ -161,7 +160,7 @@ class _TimelineItem extends StatelessWidget {
                 border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
-            Container(width: 2, height: 40, color: AppColors.darkBorder),
+            Container(width: 2, height: 40, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)),
           ],
         ),
         const SizedBox(width: 12),
@@ -177,10 +176,10 @@ class _TimelineItem extends StatelessWidget {
                 if (log.description != null)
                   Text(log.description,
                       style: AppTextStyles.bodySmall
-                          .copyWith(color: AppColors.grey400)),
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
                 Text(
                   '${log.createdAt.day}/${log.createdAt.month}/${log.createdAt.year}',
-                  style: AppTextStyles.caption,
+                  style: AppTextStyles.caption.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                 ),
               ],
             ),

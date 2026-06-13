@@ -14,7 +14,7 @@ class ComplaintsListView extends GetView<ComplaintsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mes Réclamations', style: AppTextStyles.titleLarge),
+        title: Text('Mes Réclamations', style: AppTextStyles.titleLarge.copyWith(color: Theme.of(context).colorScheme.onSurface)),
         actions: [
           IconButton(
               icon: const Icon(Icons.refresh_rounded),
@@ -24,8 +24,8 @@ class ComplaintsListView extends GetView<ComplaintsController> {
       body: Obx(() {
         if (controller.isLoading.value) {
           return Shimmer.fromColors(
-            baseColor: AppColors.darkCard,
-            highlightColor: AppColors.darkBorder,
+            baseColor: Theme.of(context).cardTheme.color ?? Colors.grey[300]!,
+            highlightColor: Theme.of(context).dividerColor,
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: 5,
@@ -33,7 +33,7 @@ class ComplaintsListView extends GetView<ComplaintsController> {
                 height: 90,
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.darkCard,
+                  color: Theme.of(context).cardTheme.color,
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
@@ -45,10 +45,10 @@ class ComplaintsListView extends GetView<ComplaintsController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.report_off_rounded,
-                    size: 72, color: AppColors.grey600),
+                Icon(Icons.report_off_rounded,
+                    size: 72, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                 const SizedBox(height: 16),
-                Text('Aucune réclamation', style: AppTextStyles.titleMedium),
+                Text('Aucune réclamation', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
                   onPressed: () => Get.toNamed(AppRoutes.createComplaint),
@@ -82,10 +82,12 @@ class ComplaintsListView extends GetView<ComplaintsController> {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.darkCard,
+                      color: Theme.of(context).cardTheme.color,
                       borderRadius: BorderRadius.circular(16),
-                      border: const Border.fromBorderSide(
-                          BorderSide(color: AppColors.darkBorder)),
+                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+                      boxShadow: [
+                        BoxShadow(color: Theme.of(context).shadowColor.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                      ],
                     ),
                     child: Row(
                       children: [
@@ -105,13 +107,13 @@ class ComplaintsListView extends GetView<ComplaintsController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(c.title,
-                                  style: AppTextStyles.titleSmall,
+                                  style: AppTextStyles.titleSmall.copyWith(color: Theme.of(context).colorScheme.onSurface),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis),
                               const SizedBox(height: 4),
                               Text(c.description,
                                   style: AppTextStyles.bodySmall.copyWith(
-                                      color: AppColors.grey500),
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis),
                               const SizedBox(height: 6),
@@ -129,15 +131,15 @@ class ComplaintsListView extends GetView<ComplaintsController> {
                                 ),
                                 const Spacer(),
                                 if (c.hasLocation)
-                                  const Icon(Icons.location_on_rounded,
-                                      size: 14, color: AppColors.grey500),
+                                  Icon(Icons.location_on_rounded,
+                                      size: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                               ]),
                             ],
                           ),
                         ),
                         const SizedBox(width: 8),
-                        const Icon(Icons.chevron_right_rounded,
-                            color: AppColors.grey500, size: 20),
+                        Icon(Icons.chevron_right_rounded,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4), size: 20),
                       ],
                     ),
                   ),
