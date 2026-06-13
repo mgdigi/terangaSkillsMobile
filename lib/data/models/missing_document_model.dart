@@ -36,21 +36,21 @@ class MissingDocumentModel {
 
   factory MissingDocumentModel.fromJson(Map<String, dynamic> json) {
     return MissingDocumentModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      photoUrl: json['photoUrl'] as String?,
-      lastSeenLocation: json['lastSeenLocation'] as String?,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
-      status: json['status'] as String? ?? 'MISSING',
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      photoUrl: json['photoUrl']?.toString(),
+      lastSeenLocation: json['lastSeenLocation']?.toString(),
+      latitude: json['latitude'] != null ? double.tryParse(json['latitude'].toString()) : null,
+      longitude: json['longitude'] != null ? double.tryParse(json['longitude'].toString()) : null,
+      status: json['status']?.toString() ?? 'MISSING',
       isVerified: json['isVerified'] as bool? ?? false,
-      reportedById: json['reportedById'] as String,
+      reportedById: json['reportedById']?.toString() ?? '',
       reportedBy: json['reportedBy'] != null
           ? UserModel.fromJson(json['reportedBy'] as Map<String, dynamic>)
           : null,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now() : DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt'].toString()) ?? DateTime.now() : DateTime.now(),
       history: json['history'] != null
           ? (json['history'] as List)
               .map((e) => ActionLogModel.fromJson(e as Map<String, dynamic>))

@@ -35,6 +35,8 @@ class ComplaintsController extends GetxController {
       complaints.value = await _repo.getMyComplaints();
     } on DioException catch (e) {
       AppSnackbar.error(_msg(e));
+    } catch (e) {
+      AppSnackbar.error('Erreur inattendue: $e');
     } finally {
       isLoading.value = false;
     }
@@ -46,6 +48,8 @@ class ComplaintsController extends GetxController {
       selectedComplaint.value = await _repo.getComplaint(id);
     } on DioException catch (e) {
       AppSnackbar.error(_msg(e));
+    } catch (e) {
+      AppSnackbar.error('Erreur inattendue: $e');
     } finally {
       isLoading.value = false;
     }
@@ -110,6 +114,8 @@ class ComplaintsController extends GetxController {
       Get.back();
     } on DioException catch (e) {
       AppSnackbar.error(_msg(e));
+    } catch (e) {
+      AppSnackbar.error('Erreur inattendue: $e');
     } finally {
       isSubmitting.value = false;
     }

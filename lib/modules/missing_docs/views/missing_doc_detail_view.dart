@@ -25,7 +25,7 @@ class MissingDocDetailView extends GetView<MissingDocsController> {
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: Get.back,
         ),
-        title: Text('Détail du document perdu', style: AppTextStyles.titleMedium),
+        title: Text('Détail du document perdu', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -52,7 +52,7 @@ class MissingDocDetailView extends GetView<MissingDocsController> {
                     placeholder: (_, __) => Container(
                       width: double.infinity,
                       height: 200,
-                      color: AppColors.darkBorder,
+                      color: Theme.of(context).dividerColor,
                     ),
                     errorWidget: (_, __, ___) => Container(
                       width: double.infinity,
@@ -93,7 +93,7 @@ class MissingDocDetailView extends GetView<MissingDocsController> {
               
               // ─── Timeline ───────────────────────────
               if (doc.history != null && doc.history!.isNotEmpty) ...[
-                Text('Historique', style: AppTextStyles.titleMedium),
+                Text('Historique', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 16),
                 ...doc.history!.map((log) => _TimelineItem(log: log)),
               ],
@@ -130,7 +130,7 @@ class _StatusBanner extends StatelessWidget {
             children: [
               Text('Statut actuel',
                   style: AppTextStyles.labelSmall
-                      .copyWith(color: AppColors.grey500)),
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
               Text(label,
                   style: AppTextStyles.titleSmall.copyWith(color: color)),
             ],
@@ -153,10 +153,9 @@ class _InfoCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.darkCard,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(12),
-          border: const Border.fromBorderSide(
-              BorderSide(color: AppColors.darkBorder)),
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,10 +164,10 @@ class _InfoCard extends StatelessWidget {
               width: 120,
               child: Text(label,
                   style: AppTextStyles.bodySmall
-                      .copyWith(color: AppColors.grey500)),
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
             ),
             Expanded(
-              child: Text(value, style: AppTextStyles.bodyMedium),
+              child: Text(value, style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
             ),
           ],
         ),
@@ -197,7 +196,7 @@ class _TimelineItem extends StatelessWidget {
                 border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
-            Container(width: 2, height: 40, color: AppColors.darkBorder),
+            Container(width: 2, height: 40, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)),
           ],
         ),
         const SizedBox(width: 12),
@@ -213,10 +212,10 @@ class _TimelineItem extends StatelessWidget {
                 if (log.description != null)
                   Text(log.description,
                       style: AppTextStyles.bodySmall
-                          .copyWith(color: AppColors.grey400)),
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
                 Text(
                   '${log.createdAt.day}/${log.createdAt.month}/${log.createdAt.year}',
-                  style: AppTextStyles.caption,
+                  style: AppTextStyles.caption.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                 ),
               ],
             ),

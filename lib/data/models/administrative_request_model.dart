@@ -35,14 +35,14 @@ class AdministrativeRequestModel {
 
   factory AdministrativeRequestModel.fromJson(Map<String, dynamic> json) {
     return AdministrativeRequestModel(
-      id: json['id'] as String,
-      type: json['type'] as String? ?? 'OTHER',
-      title: json['title'] as String,
-      description: json['description'] as String,
+      id: json['id']?.toString() ?? '',
+      type: json['type']?.toString() ?? 'OTHER',
+      title: json['title']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       data: json['data'],
-      attachments: List<String>.from(json['attachments'] as List? ?? []),
-      status: json['status'] as String? ?? 'PENDING',
-      citizenId: json['citizenId'] as String,
+      attachments: json['attachments'] != null ? List<String>.from(json['attachments'] as List) : [],
+      status: json['status']?.toString() ?? 'PENDING',
+      citizenId: json['citizenId']?.toString() ?? '',
       citizen: json['citizen'] != null
           ? UserModel.fromJson(json['citizen'] as Map<String, dynamic>)
           : null,
@@ -50,8 +50,8 @@ class AdministrativeRequestModel {
       assignedAgent: json['assignedAgent'] != null
           ? UserModel.fromJson(json['assignedAgent'] as Map<String, dynamic>)
           : null,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now() : DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt'].toString()) ?? DateTime.now() : DateTime.now(),
       history: json['history'] != null
           ? (json['history'] as List)
               .map((e) => ActionLogModel.fromJson(e as Map<String, dynamic>))
@@ -94,14 +94,14 @@ class ActionLogModel {
 
   factory ActionLogModel.fromJson(Map<String, dynamic> json) {
     return ActionLogModel(
-      id: json['id'] as String,
-      action: json['action'] as String,
-      description: json['description'] as String?,
-      actorId: json['actorId'] as String,
+      id: json['id']?.toString() ?? '',
+      action: json['action']?.toString() ?? '',
+      description: json['description']?.toString(),
+      actorId: json['actorId']?.toString() ?? '',
       actor: json['actor'] != null
           ? UserModel.fromJson(json['actor'] as Map<String, dynamic>)
           : null,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now() : DateTime.now(),
     );
   }
 }

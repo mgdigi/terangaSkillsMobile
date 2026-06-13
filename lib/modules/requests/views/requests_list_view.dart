@@ -14,7 +14,7 @@ class RequestsListView extends GetView<RequestsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mes Demandes', style: AppTextStyles.titleLarge),
+        title: Text('Mes Demandes', style: AppTextStyles.titleLarge.copyWith(color: Theme.of(context).colorScheme.onSurface)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
@@ -23,8 +23,8 @@ class RequestsListView extends GetView<RequestsController> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value) return _buildShimmer();
-        if (controller.requests.isEmpty) return _buildEmpty();
+        if (controller.isLoading.value) return _buildShimmer(context);
+        if (controller.requests.isEmpty) return _buildEmpty(context);
         return RefreshIndicator(
           onRefresh: controller.fetchMyRequests,
           color: AppColors.primary,
@@ -52,10 +52,10 @@ class RequestsListView extends GetView<RequestsController> {
     );
   }
 
-  Widget _buildShimmer() {
+  Widget _buildShimmer(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppColors.darkCard,
-      highlightColor: AppColors.darkBorder,
+      baseColor: Theme.of(context).cardTheme.color ?? Colors.grey[300]!,
+      highlightColor: Theme.of(context).dividerColor,
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: 6,
@@ -63,7 +63,7 @@ class RequestsListView extends GetView<RequestsController> {
           height: 90,
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: AppColors.darkCard,
+            color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(16),
           ),
         ),
@@ -71,19 +71,19 @@ class RequestsListView extends GetView<RequestsController> {
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _buildEmpty(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.folder_open_rounded,
-              size: 72, color: AppColors.grey600),
+              size: 72, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
           const SizedBox(height: 16),
-          Text('Aucune demande', style: AppTextStyles.titleMedium),
+          Text('Aucune demande', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
           const SizedBox(height: 8),
           Text('Soumettez votre première demande !',
               style: AppTextStyles.bodySmall
-                  .copyWith(color: AppColors.grey500)),
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => Get.toNamed(AppRoutes.createRequest),
@@ -124,10 +124,13 @@ class _RequestCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.darkCard,
+            color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(16),
             border:
-                const Border.fromBorderSide(BorderSide(color: AppColors.darkBorder)),
+                Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+            boxShadow: [
+              BoxShadow(color: Theme.of(context).shadowColor.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+            ],
           ),
           child: Row(
             children: [
@@ -148,10 +151,10 @@ class _RequestCard extends StatelessWidget {
                   children: [
                     Text(type,
                         style: AppTextStyles.labelSmall
-                            .copyWith(color: AppColors.grey500)),
+                            .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
                     const SizedBox(height: 2),
                     Text(title,
-                        style: AppTextStyles.titleSmall,
+                        style: AppTextStyles.titleSmall.copyWith(color: Theme.of(context).colorScheme.onSurface),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 6),
@@ -173,7 +176,7 @@ class _RequestCard extends StatelessWidget {
                         const Spacer(),
                         Text(
                           '${date.day}/${date.month}/${date.year}',
-                          style: AppTextStyles.caption,
+                          style: AppTextStyles.caption.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                         ),
                       ],
                     ),
@@ -181,8 +184,8 @@ class _RequestCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.chevron_right_rounded,
-                  color: AppColors.grey500, size: 20),
+              Icon(Icons.chevron_right_rounded,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4), size: 20),
             ],
           ),
         ),

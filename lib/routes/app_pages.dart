@@ -4,6 +4,8 @@ import '../modules/auth/views/login_view.dart';
 import '../modules/auth/views/register_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/onboarding/bindings/onboarding_binding.dart';
+import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/requests/bindings/requests_binding.dart';
 import '../modules/requests/views/create_request_view.dart';
 import '../modules/requests/views/request_detail_view.dart';
@@ -30,6 +32,11 @@ class AppPages {
       name: AppRoutes.login,
       page: () => const LoginView(),
       binding: AuthBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.onboarding,
+      page: () => const OnboardingView(),
+      binding: OnboardingBinding(),
     ),
     GetPage(
       name: AppRoutes.register,

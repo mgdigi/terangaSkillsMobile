@@ -31,7 +31,7 @@ class HomeView extends GetView<HomeController> {
           floatingActionButton: _buildFab(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: _buildBottomNav(),
+          bottomNavigationBar: _buildBottomNav(context),
         ));
   }
 
@@ -78,11 +78,11 @@ class HomeView extends GetView<HomeController> {
     }
   }
 
-  Widget _buildBottomNav() {
+  Widget _buildBottomNav(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.darkSurface,
-        border: Border(top: BorderSide(color: AppColors.darkBorder, width: 1)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        border: Border(top: BorderSide(color: Theme.of(context).dividerColor, width: 1)),
       ),
       child: BottomAppBar(
         color: Colors.transparent,

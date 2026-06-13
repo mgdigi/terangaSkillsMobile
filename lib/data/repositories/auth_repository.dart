@@ -8,12 +8,17 @@ class AuthRepository {
 
   AuthRepository({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
 
+  Map<String, dynamic> _safeMap(dynamic data) {
+    if (data is Map<String, dynamic>) return data;
+    return {};
+  }
+
   Future<AuthResponseModel> login({
     required String email,
     required String password,
   }) async {
     final response = await _apiClient.login({'email': email, 'password': password});
-    return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
+    return AuthResponseModel.fromJson(_safeMap(response.data));
   }
 
   Future<AuthResponseModel> register({
@@ -23,18 +28,24 @@ class AuthRepository {
     required String lastName,
     String? phone,
   }) async {
-    final response = await _apiClient.register({
+    final body = <String, dynamic>{
       'email': email,
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-      'phone': ?phone,
-    });
-    return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
+    };
+    if (phone != null && phone.isNotEmpty) body['phone'] = phone;
+    final response = await _apiClient.register(body);
+    return AuthResponseModel.fromJson(_safeMap(response.data));
   }
 
   Future<UserModel> getProfile() async {
     final response = await _apiClient.getMe();
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    final data = _safeMap(response.data);
+    // Handle { data: {...} } wrapping
+    final userData = data.containsKey('data') && data['data'] is Map
+        ? data['data'] as Map<String, dynamic>
+        : data;
+    return UserModel.fromJson(userData);
   }
 }

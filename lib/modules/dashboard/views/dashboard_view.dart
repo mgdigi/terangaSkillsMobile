@@ -13,7 +13,7 @@ class DashboardView extends GetView<DashboardController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tableau de bord', style: AppTextStyles.titleLarge),
+        title: Text('Tableau de bord', style: AppTextStyles.titleLarge.copyWith(color: Theme.of(context).colorScheme.onSurface)),
         actions: [
           IconButton(
               icon: const Icon(Icons.refresh_rounded),
@@ -21,18 +21,18 @@ class DashboardView extends GetView<DashboardController> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value) return _buildShimmer();
+        if (controller.isLoading.value) return _buildShimmer(context);
         final s = controller.stats.value;
         if (s == null) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.bar_chart_rounded,
-                    size: 72, color: AppColors.grey600),
+                Icon(Icons.bar_chart_rounded,
+                    size: 72, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                 const SizedBox(height: 16),
                 Text('Statistiques indisponibles',
-                    style: AppTextStyles.titleMedium),
+                    style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: controller.fetchStats,
@@ -48,7 +48,7 @@ class DashboardView extends GetView<DashboardController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ─── KPI Row ──────────────────────────
-              Text('KPIs Globaux', style: AppTextStyles.titleMedium),
+              Text('KPIs Globaux', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
               const SizedBox(height: 16),
               Row(children: [
                 Expanded(
@@ -87,12 +87,12 @@ class DashboardView extends GetView<DashboardController> {
               ]),
               const SizedBox(height: 28),
               // ─── Requests Chart ────────────────────
-              Text('Demandes administratives', style: AppTextStyles.titleMedium),
+              Text('Demandes administratives', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
               const SizedBox(height: 16),
               _RequestsChart(stats: s.administrativeRequests),
               const SizedBox(height: 28),
               // ─── Completion Rates ──────────────────
-              Text('Taux de résolution', style: AppTextStyles.titleMedium),
+              Text('Taux de résolution', style: AppTextStyles.titleMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
               const SizedBox(height: 16),
               _RateBar(
                 label: 'Demandes complétées',
@@ -118,10 +118,10 @@ class DashboardView extends GetView<DashboardController> {
     );
   }
 
-  Widget _buildShimmer() {
+  Widget _buildShimmer(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppColors.darkCard,
-      highlightColor: AppColors.darkBorder,
+      baseColor: Theme.of(context).cardTheme.color ?? Colors.grey[300]!,
+      highlightColor: Theme.of(context).dividerColor,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -131,7 +131,7 @@ class DashboardView extends GetView<DashboardController> {
                     height: 80,
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: AppColors.darkCard,
+                      color: Theme.of(context).cardTheme.color,
                       borderRadius: BorderRadius.circular(16),
                     ),
                   )),
@@ -159,10 +159,12 @@ class _KpiCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(16),
-        border: const Border.fromBorderSide(
-            BorderSide(color: AppColors.darkBorder)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+        boxShadow: [
+          BoxShadow(color: Theme.of(context).shadowColor.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +183,7 @@ class _KpiCard extends StatelessWidget {
                   AppTextStyles.headlineMedium.copyWith(color: color)),
           Text(label,
               style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.grey500)),
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
         ],
       ),
     );
@@ -202,10 +204,12 @@ class _RequestsChart extends StatelessWidget {
       height: 180,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(16),
-        border:
-            const Border.fromBorderSide(BorderSide(color: AppColors.darkBorder)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+        boxShadow: [
+          BoxShadow(color: Theme.of(context).shadowColor.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Row(
         children: [
@@ -278,7 +282,7 @@ class _Legend extends StatelessWidget {
         const SizedBox(width: 8),
         Text('$label ($value)',
             style:
-                AppTextStyles.bodySmall.copyWith(color: AppColors.grey400)),
+                AppTextStyles.bodySmall.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
       ],
     );
   }
@@ -297,10 +301,12 @@ class _RateBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(12),
-        border: const Border.fromBorderSide(
-            BorderSide(color: AppColors.darkBorder)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
+        boxShadow: [
+          BoxShadow(color: Theme.of(context).shadowColor.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +314,7 @@ class _RateBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label, style: AppTextStyles.bodySmall),
+              Text(label, style: AppTextStyles.bodySmall.copyWith(color: Theme.of(context).colorScheme.onSurface)),
               Text('${rate.toStringAsFixed(1)}%',
                   style: AppTextStyles.labelMedium.copyWith(color: color)),
             ],
