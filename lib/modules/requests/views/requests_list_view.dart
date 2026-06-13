@@ -23,8 +23,8 @@ class RequestsListView extends GetView<RequestsController> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value) return _buildShimmer();
-        if (controller.requests.isEmpty) return _buildEmpty();
+        if (controller.isLoading.value) return _buildShimmer(context);
+        if (controller.requests.isEmpty) return _buildEmpty(context);
         return RefreshIndicator(
           onRefresh: controller.fetchMyRequests,
           color: AppColors.primary,
@@ -52,7 +52,7 @@ class RequestsListView extends GetView<RequestsController> {
     );
   }
 
-  Widget _buildShimmer() {
+  Widget _buildShimmer(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Theme.of(context).cardTheme.color ?? Colors.grey[300]!,
       highlightColor: Theme.of(context).dividerColor,
@@ -71,7 +71,7 @@ class RequestsListView extends GetView<RequestsController> {
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _buildEmpty(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

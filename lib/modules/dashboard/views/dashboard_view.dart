@@ -21,7 +21,7 @@ class DashboardView extends GetView<DashboardController> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value) return _buildShimmer();
+        if (controller.isLoading.value) return _buildShimmer(context);
         final s = controller.stats.value;
         if (s == null) {
           return Center(
@@ -118,7 +118,7 @@ class DashboardView extends GetView<DashboardController> {
     );
   }
 
-  Widget _buildShimmer() {
+  Widget _buildShimmer(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Theme.of(context).cardTheme.color ?? Colors.grey[300]!,
       highlightColor: Theme.of(context).dividerColor,
