@@ -8,9 +8,16 @@ class AuthResponseModel {
   });
 
   factory AuthResponseModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as Map<String, dynamic>? ?? json;
+    
+    final token = data['access_token']?.toString() ??
+        data['accessToken']?.toString() ??
+        data['token']?.toString() ??
+        '';
+        
     return AuthResponseModel(
-      accessToken: json['access_token']?.toString() ?? '',
-      user: json['user'] != null ? Map<String, dynamic>.from(json['user'] as Map) : {},
+      accessToken: token,
+      user: data['user'] != null ? Map<String, dynamic>.from(data['user'] as Map) : {},
     );
   }
 

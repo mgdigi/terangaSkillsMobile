@@ -13,6 +13,7 @@ class AuthRepository {
     required String password,
   }) async {
     final response = await _apiClient.login({'email': email, 'password': password});
+    print('LOGIN RESPONSE: ${response.data}');
     return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }
 
@@ -28,7 +29,7 @@ class AuthRepository {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-      'phone': ?phone,
+      'phone': phone,
     });
     return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }

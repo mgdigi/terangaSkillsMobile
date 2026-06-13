@@ -17,6 +17,7 @@ class HomeTab extends StatelessWidget {
     final homeCtrl = Get.find<HomeController>();
     // Inject MissingDocsController to fetch recent missing docs
     final missingDocsCtrl = Get.put(MissingDocsController());
+    return Scaffold(
       backgroundColor: AppColors.darkBackground,
       body: CustomScrollView(
         slivers: [
