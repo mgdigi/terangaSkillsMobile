@@ -4,6 +4,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../routes/app_routes.dart';
 import '../../auth/controller/auth_controller.dart';
+import '../controller/home_controller.dart';
+import '../../missing_docs/controller/missing_docs_controller.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
@@ -11,7 +14,9 @@ class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Get.find<AuthController>();
-    return Scaffold(
+    final homeCtrl = Get.find<HomeController>();
+    // Inject MissingDocsController to fetch recent missing docs
+    final missingDocsCtrl = Get.put(MissingDocsController());
       backgroundColor: AppColors.darkBackground,
       body: CustomScrollView(
         slivers: [
@@ -63,6 +68,16 @@ class HomeTab extends StatelessWidget {
               ),
             ),
             actions: [
+              Obx(() => IconButton(
+                    icon: Icon(
+                      homeCtrl.isDarkMode.value
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      color: Colors.white,
+                    ),
+                    onPressed: homeCtrl.toggleTheme,
+                  )),
+              const SizedBox(width: 8),
               Obx(() {
                 final name = auth.currentUser.value?.firstName ?? '';
                 final initial = name.isNotEmpty ? name[0].toUpperCase() : 'U';
@@ -132,6 +147,114 @@ class HomeTab extends StatelessWidget {
                         onTap: () => Get.toNamed(AppRoutes.qrScan),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 32),
+                  // ─── Missing Documents Carousel ────────────
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Documents Perdus/Trouvés',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => homeCtrl.changeTab(3),
+                        child: Text(
+                          'Voir tout',
+                          style: AppTextStyles.labelMedium.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 140,
+                    child: Obx(() {
+                      if (missingDocsCtrl.isLoading.value && missingDocsCtrl.docs.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (missingDocsCtrl.docs.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'Aucun document signalé récent.',
+                            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.grey500),
+                          ),
+                        );
+                      }
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: missingDocsCtrl.docs.length > 5 ? 5 : missingDocsCtrl.docs.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 16),
+                        itemBuilder: (context, index) {
+                          final doc = missingDocsCtrl.docs[index];
+                          final isMissing = doc.status == 'MISSING';
+                          return GestureDetector(
+                            onTap: () {
+                              Get.toNamed(AppRoutes.missingDocDetail, arguments: doc);
+                            },
+                            child: Container(
+                              width: 240,
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.darkCard,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.darkBorder.withOpacity(0.5)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: isMissing
+                                              ? AppColors.error.withOpacity(0.15)
+                                              : AppColors.success.withOpacity(0.15),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          isMissing ? 'PERDU' : 'TROUVÉ',
+                                          style: AppTextStyles.labelSmall.copyWith(
+                                            color: isMissing ? AppColors.error : AppColors.success,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        timeago.format(doc.createdAt, locale: 'fr'),
+                                        style: AppTextStyles.labelSmall.copyWith(color: AppColors.grey500, fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    doc.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.labelLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    doc.description,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.grey400, height: 1.2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
                   ),
                   const SizedBox(height: 32),
                   // ─── Recent Banner Premium ─────────────────

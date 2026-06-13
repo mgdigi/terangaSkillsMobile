@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
 import 'routes/app_pages.dart';
@@ -12,6 +13,9 @@ void main() async {
 
   // Init local storage
   await GetStorage.init();
+
+  // Configure timeago for French
+  timeago.setLocaleMessages('fr', timeago.FrMessages());
 
   // Lock to portrait
   await SystemChrome.setPreferredOrientations([
@@ -48,7 +52,7 @@ class TerangaSkillsApp extends StatelessWidget {
       // Theme
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: (storage.read<bool>('isDarkMode') ?? true) ? ThemeMode.dark : ThemeMode.light,
 
       // Routing
       initialRoute: initialRoute,
