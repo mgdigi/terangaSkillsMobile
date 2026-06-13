@@ -7,6 +7,6 @@ class ComplaintsBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<ComplaintRepository>(() => ComplaintRepository());
     Get.lazyPut<ComplaintsController>(
-        () => ComplaintsController(repo: Get.find()));
+        () => ComplaintsController(repo: Get.find<ComplaintRepository>()));
   }
 }
