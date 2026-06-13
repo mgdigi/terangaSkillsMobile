@@ -46,6 +46,8 @@ class RequestsController extends GetxController {
       requests.value = await _repo.getMyRequests();
     } on DioException catch (e) {
       AppSnackbar.error(_msg(e));
+    } catch (e) {
+      AppSnackbar.error('Erreur inattendue: $e');
     } finally {
       isLoading.value = false;
     }
@@ -57,6 +59,8 @@ class RequestsController extends GetxController {
       selectedRequest.value = await _repo.getRequest(id);
     } on DioException catch (e) {
       AppSnackbar.error(_msg(e));
+    } catch (e) {
+      AppSnackbar.error('Erreur inattendue: $e');
     } finally {
       isLoading.value = false;
     }
@@ -89,6 +93,8 @@ class RequestsController extends GetxController {
       Get.back();
     } on DioException catch (e) {
       AppSnackbar.error(_msg(e));
+    } catch (e) {
+      AppSnackbar.error('Erreur inattendue: $e');
     } finally {
       isSubmitting.value = false;
     }

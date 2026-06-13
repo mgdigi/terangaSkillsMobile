@@ -15,10 +15,10 @@ class HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Get.find<AuthController>();
     final homeCtrl = Get.find<HomeController>();
-    // Inject MissingDocsController to fetch recent missing docs
-    final missingDocsCtrl = Get.put(MissingDocsController());
+    // Use find (registered in HomeBinding) to avoid re-registration on rebuild
+    final missingDocsCtrl = Get.find<MissingDocsController>();
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
           // ─── App Bar Premium ──────────────────────────────
@@ -26,12 +26,15 @@ class HomeTab extends StatelessWidget {
             expandedHeight: 180,
             pinned: true,
             elevation: 0,
-            backgroundColor: AppColors.darkSurface,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.darkSurface, AppColors.darkBackground],
+                    colors: [
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -48,7 +51,7 @@ class HomeTab extends StatelessWidget {
                           return Text(
                             'Bonjour, ${name.isNotEmpty ? name : 'Citoyen'} 👋',
                             style: AppTextStyles.headlineSmall.copyWith(
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                               letterSpacing: -0.5,
                             ),
@@ -58,7 +61,7 @@ class HomeTab extends StatelessWidget {
                         Text(
                           'Que souhaitez-vous faire aujourd\'hui ?',
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.grey400,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -74,7 +77,7 @@ class HomeTab extends StatelessWidget {
                       homeCtrl.isDarkMode.value
                           ? Icons.light_mode_rounded
                           : Icons.dark_mode_rounded,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     onPressed: homeCtrl.toggleTheme,
                   )),
@@ -83,16 +86,58 @@ class HomeTab extends StatelessWidget {
                 final name = auth.currentUser.value?.firstName ?? '';
                 final initial = name.isNotEmpty ? name[0].toUpperCase() : 'U';
                 return Padding(
-                  padding: const EdgeInsets.only(right: 24),
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: AppColors.primary.withOpacity(0.15),
-                    child: Text(
-                      initial,
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                  padding: const EdgeInsets.only(right: 16),
+                  child: PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        auth.logout();
+                      }
+                    },
+                    offset: const Offset(0, 50),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    color: Theme.of(context).cardTheme.color,
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        enabled: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${auth.currentUser.value?.firstName ?? ''} ${auth.currentUser.value?.lastName ?? ''}',
+                              style: AppTextStyles.titleSmall.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                            ),
+                            Text(
+                              auth.currentUser.value?.email ?? '',
+                              style: AppTextStyles.bodySmall.copyWith(color: AppColors.grey500),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuDivider(),
+                      PopupMenuItem(
+                        value: 'logout',
+                        child: Row(
+                          children: [
+                            const Icon(Icons.logout_rounded, color: AppColors.error, size: 20),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Se déconnecter',
+                              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: AppColors.primary.withOpacity(0.15),
+                      child: Text(
+                        initial,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
@@ -110,7 +155,7 @@ class HomeTab extends StatelessWidget {
                   Text(
                     'Services rapides',
                     style: AppTextStyles.titleMedium.copyWith(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -157,7 +202,7 @@ class HomeTab extends StatelessWidget {
                       Text(
                         'Documents Perdus/Trouvés',
                         style: AppTextStyles.titleMedium.copyWith(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -202,9 +247,9 @@ class HomeTab extends StatelessWidget {
                               width: 240,
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: AppColors.darkCard,
+                                color: Theme.of(context).cardTheme.color,
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: AppColors.darkBorder.withOpacity(0.5)),
+                                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,14 +285,14 @@ class HomeTab extends StatelessWidget {
                                     doc.title,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.labelLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                    style: AppTextStyles.labelLarge.copyWith(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w600),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     doc.description,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.grey400, height: 1.2),
+                                    style: AppTextStyles.bodySmall.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), height: 1.2),
                                   ),
                                 ],
                               ),
@@ -262,7 +307,7 @@ class HomeTab extends StatelessWidget {
                   Text(
                     'Mes dernières demandes',
                     style: AppTextStyles.titleMedium.copyWith(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -298,12 +343,12 @@ class _PremiumActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.darkBorder.withOpacity(0.5), width: 1),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Theme.of(context).shadowColor.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -333,7 +378,7 @@ class _PremiumActionCard extends StatelessWidget {
                 Text(
                   label,
                   style: AppTextStyles.labelMedium.copyWith(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w500,
                     height: 1.3,
                   ),
@@ -358,7 +403,7 @@ class _PremiumRecentBanner extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             AppColors.primary.withOpacity(0.15),
-            AppColors.darkCard,
+            Theme.of(context).cardTheme.color ?? AppColors.darkCard,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -399,7 +444,7 @@ class _PremiumRecentBanner extends StatelessWidget {
                       Text(
                         'Voir mes demandes',
                         style: AppTextStyles.titleSmall.copyWith(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -407,7 +452,7 @@ class _PremiumRecentBanner extends StatelessWidget {
                       Text(
                         'Suivez l\'état de vos dossiers en temps réel',
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.grey400,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                         ),
                       ),
                     ],
