@@ -2,7 +2,7 @@
   AppConstants._();
 
   static const String baseUrl = 'https://terangaskillsback-1-zxhy.onrender.com/api/v1';
-  static const String geminiApiKey = 'AQ.AbRN6KxUpTq6fELWJlE5IoXo9a5fZ-1EaQ9JW4U26QqpwcNpA';
+  static const String geminiApiKey = 'Key';
   //static const String apiVersion = '/v1';
   static const int connectTimeout = 90000;
   static const int receiveTimeout = 90000;
